@@ -1,2 +1,1 @@
-# tradewin
- Tool to find beneficial trades in fantasy football
+A tool to find beneficial trades in fantasy football.
