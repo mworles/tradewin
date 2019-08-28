@@ -14,9 +14,19 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
-from League import league
+from League import LEAGUE as league
 
-def scrape_league(login, key, league_id):
+def scrape_league(league):
+    
+    global time
+    
+    #lg = league[2]
+    id = league['LOGIN']
+    key = league['KEY']
+    league_id = league['LEAGUE_ID']
+
+    n_teams = len(league['TEAM_NAMES'].values())
+
     browser = webdriver.Chrome('driver/chromedriver.exe')
     options = webdriver.ChromeOptions()
     options.add_argument('--disable-gpu')
@@ -25,12 +35,17 @@ def scrape_league(login, key, league_id):
     login = browser.find_element_by_link_text('Sign in')
     login.click()
 
+    time.sleep(2)
+
     login_user = browser.find_element_by_id('login-username')
-    login_user.send_keys(login)
-    submit = browser.find_element_by_name('signin')
+    login_user.send_keys(id)
+    
+    time.sleep(2)
+    
+    submit = browser.find_element_by_id('login-signin')
     submit.click()
 
-    time.sleep(5)
+    time.sleep(2)
 
     login_pwd = browser.find_element_by_id('login-passwd')
     login_pwd.send_keys(key)
@@ -39,11 +54,11 @@ def scrape_league(login, key, league_id):
 
     teams = []
 
-    n_teams = range(1, 15)
-    
+    n_teams = range(1, n_teams + 1)
+
     url_base = "https://football.fantasysports.yahoo.com/f1/"
-    url_league = "".join([url_base, str(league_id), '/')
-    
+    url_league = "".join([url_base, str(league_id), '/'])
+
     for n in n_teams:
         url_team = url_league + str(n)
         browser.get(url_team)
@@ -72,3 +87,6 @@ def scrape_league(login, key, league_id):
             writer.writerow(r)
 
     shutil.copy(f, f_current)
+
+my_league = league[2]
+scrape_league(my_league)
