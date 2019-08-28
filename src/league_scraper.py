@@ -42,12 +42,33 @@ def scrape_league(league):
     
     time.sleep(2)
     
-    submit = browser.find_element_by_id('login-signin')
-    submit.click()
+    
+    #javaScript = "document.getElementsByName('signin')[0].click();"
+    #browser.execute_script(javaScript)
 
-    time.sleep(2)
-
-    login_pwd = browser.find_element_by_id('login-passwd')
+    signin = browser.find_element_by_xpath("//*[@id='login-signin']")
+    browser.execute_script("arguments[0].click();", signin)    
+    
+    #browser.switch_to_default_content()
+    #iframe = browser.find_elements_by_tag_name('iframe')[0]
+    #browser.switch_to.frame(iframe)
+    #browser.execute_script("jQuery('{}').click();".format("#login-signin"))
+    #submit = browser.find_element_by_xpath("//*[@id='login-signin']")
+    #submit = browser.find_element_by_id('login-signin')
+    #submit.click()
+    #time.sleep(10)
+    
+    # *************  locate CheckBox  **************
+    #cb = browser.find_element_by_id("recaptcha-anchor")
+    #cb.click()
+    try:
+        login_pwd = WebDriverWait(browser, 60).until(
+            EC.presence_of_element_located((By.ID, "login-passwd"))
+            )
+    finally:
+        browser.quit()
+    
+    #login_pwd = browser.find_element_by_id('login-passwd')
     login_pwd.send_keys(key)
     submit = browser.find_element_by_id('login-signin')
     submit.click()
