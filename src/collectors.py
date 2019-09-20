@@ -7,6 +7,7 @@ from constants import (score_dict, TEAM_NAMES, TEAM_MATCHER, POSITIONS,
                        LINEUP_SLOTS, MY_TEAM)
 import itertools
 
+TEAM_NUMS = {y:x for x,y in TEAM_NAMES.iteritems()}
 
 
 def get_all_players(file_path):
@@ -33,7 +34,8 @@ def get_rosters(file_path):
     with open(file_path, 'r') as f:
         reader = csv.reader(f)
         for row in reader:
-            tnum = int(row[0])
+            tname = row[0]
+            tnum = TEAM_NUMS[tname]
             tp = row[1:]
             names = []
             for p in tp:
@@ -42,7 +44,6 @@ def get_rosters(file_path):
                     names.append(' '.join(p_split[0:2]))
                 else:
                     names.append(p)
-            tname = TEAM_NAMES[tnum]
             rosters.append(Roster(tnum, tname, names))
     return rosters
 
@@ -62,13 +63,14 @@ def get_yahoo_projections(file_path):
         reader = csv.reader(f)
         for row in reader:
             name_split = row[0].split(' ')
-            fi = name_split[0].replace('.', '')
+            fi = name_split[0].replace('.', '')[0]
             last = name_split[1]
             if row[1].upper() in TEAM_MATCHER:
                 tm = TEAM_MATCHER[row[1].upper()]
             else:
                 tm = row[1].upper()
             yahoo.append([fi, last, tm, row[2], float(row[-1])])
+            print [fi, last, tm, row[2], float(row[-1])]
     return yahoo
 
 def update_rosters(NF_CSV, YAHOO_CSV, ROSTER_CSV):
