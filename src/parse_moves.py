@@ -2,7 +2,7 @@
 import urllib
 import csv
 from bs4 import BeautifulSoup as bsoup
-
+import os
 import sys
 sys.path.append("..")
 
@@ -29,40 +29,50 @@ def assign_picks(picks):
         team_dict[row[1]].append(row[0])
     return team_dict
 
-# %%
-moves = []
-soup = bsoup(urllib.urlopen("../data/moves.html").read(), features="lxml")
-div = soup.find('div', {'id': 'fantasy'})
-rows = div.find_all('tr')
+def parse_file(file):
+    file_name = "".join(["../data/", file])
+    print 'parsing %s' % (file_name)
+    soup = bsoup(urllib.urlopen(file_name).read(), features="lxml")
+    div = soup.find('div', {'id': 'fantasy'})
+    rows = div.find_all('tr')
 
-all_moves = []
-# each move
-for row in rows:
-    tds = row.find_all('td')
-    actions = tds[0].find_all('span')
-    names = tds[1].find_all('a', {'target': 'sports'})
-    team = tds[2].find('a', {'class': "Tst-team-name"}).get_text()
+    file_moves = []
+    # each move
+    for row in rows:
+        tds = row.find_all('td')
+        actions = tds[0].find_all('span')
+        names = tds[1].find_all('a', {'target': 'sports'})
+        team = tds[2].find('a', {'class': "Tst-team-name"}).get_text()
 
-    n_moves = len(actions)
+        n_moves = len(actions)
+        
+        row_moves = []
 
-    row_moves = []
-
-    for n in range(0, n_moves):
-        action = actions[n].get('title')
-        name = names[n].get_text()
-        moves = [team, name, action]
-        moves = map(lambda x: x.encode('ascii', 'ignore'), moves)
-        row_moves.append(moves)
+        for n in range(0, n_moves):
+            action = actions[n].get('title')
+            name = names[n].get_text()
+            moves = [team, name, action]
+            moves = map(lambda x: x.encode('ascii', 'ignore'), moves)
+            row_moves.append(moves)
+        
+        file_moves.extend(row_moves)
     
-    all_moves.extend(row_moves)
+    return file_moves
+    
+# %%
+files = os.listdir("../data/")
+files = [f for f in files if 'moves' in f]
+files = [f for f in files if '.csv' not in f]
+data = map(parse_file, files)
+
+data = [item for sublist in data for item in sublist]
+
+data.reverse()
 
 f = '../data/moves.csv'
-
-for m in all_moves:
-    print m
 
 with open(f, 'wb') as file:
     writer = csv.writer(file, delimiter=',')
     print 'writing %s' % (f)
-    for r in all_moves:
+    for r in data:
         writer.writerow(r)
