@@ -12,49 +12,32 @@ def get_dt():
     dt = date + time
     return dt
 
-NF_CSV = 'data/nf_projections.csv'
-ROSTER_CSV = 'data/rosters.csv'
-YAHOO_CSV = 'data/yahoo_projections.csv'
+NF_CSV = '../data/nf_projections.csv'
+ROSTER_CSV = '../data/rosters.csv'
+YAHOO_CSV = '../data/yahoo_projections.csv'
 
 rosters = update_rosters(NF_CSV, YAHOO_CSV, ROSTER_CSV)
 free_agents = update_free_agents(NF_CSV, YAHOO_CSV, ROSTER_CSV)
 tg = TradeGenerator(rosters, free_agents)
-tgt_teams = [2] #[t.team_number for t in rosters if t.team_number not in [3, 4, 12]]
-#tgt_teams.remove(10)
-my_max = 1
-other_max = 1
-to_give = []
-to_get = ['Jarvis Landry']
-my_bl = [] # ['James Conner', 'Quincy Enunwa']
-other_bl = []
+tgt_teams = [9] #[t.team_number for t in rosters]
+#tgt_teams.remove(3)
+my_max = 3
+other_max = 2
+to_get = ['Mike Evans', 'Lamar Jackson']
 
 trades = tg.get_trades(teams = tgt_teams,
                        my_max = my_max,
-                       other_max = other_max,
-                       to_give = to_give,
-                       to_get = to_get,
-                       my_bl = my_bl,
-                       other_bl = other_bl)
+                       other_max = other_max)
 
 trades = [t for t in trades if t.my_nf_gain > 5 and t.other_yh_gain > 5]
-#sortfunc = lambda x: x.my_nf_gain
-sortfunc = lambda x: x.my_nf_gain + x.other_yh_gain
+sortfunc = lambda x: x.my_nf_gain #lambda x: x.my_nf_gain + x.other_yh_gain
 trades.sort(key=sortfunc) #, reverse=True)
-
-'''
-for r in rosters:
-    r_trades = [t for t in trades if t.other_team.team_number == r.team_number]
-    r_trades = [t for t in r_trades if t.other_yh_gain > 0]
-    r_trades = [t for t in r_trades if t.my_nf_gain > 0]
-    for t in r_trades[-10:]:
-        t.print_trade()
-'''
 
 for t in trades[-50:]:
     t.print_trade()
 
-pik = "trades/trade_run_" + get_dt() +  ".dat"
-pik_now = "trades/trade_run.dat"
+pik = "../trades/trade_run_" + get_dt() +  ".dat"
+pik_now = "../trades/trade_run.dat"
 
 with open(pik, "wb") as f:
     pickle.dump(trades, f)
