@@ -1,10 +1,13 @@
 import numpy as np
 import random
 from copy import copy
-from constants import MY_TEAM, POSITIONS, POSITIONS_NOFLEX, LINEUP_SLOTS, TEAM_NAMES
+from constants import POSITIONS, POSITIONS_NOFLEX, LINEUP_SLOTS
 from Trade import Trade
 from itertools import combinations, product
-#from pathos.multiprocessing import ProcessingPool as Pool
+from League import LEAGUE as LEAGUE
+TEAM_NAMES = LEAGUE[2]['TEAM_NAMES']
+MY_TEAM = LEAGUE[2]['MY_TEAM']
+
 
 teams = TEAM_NAMES.keys()
 
@@ -53,10 +56,7 @@ def run_trade(x, my_team, other_team, trades, free_agents):
 
     trade.trade_result()
 
-    #if trade.my_nf_gain > 0 and trade.other_yh_gain > 0.0:
     trades.append(trade)
-    #else:
-        #pass
 
 class TradeGenerator:
 
@@ -115,21 +115,8 @@ class TradeGenerator:
             other_team = copy(self.get_team(team_number = t))
             print other_team.team_name
             combos = other_team.get_combos(1, other_max, other_bl)
-            '''
-            combos_select = []
 
-            if len(to_get) != 0:
-                ntg = len(to_get)
-                stg = set(to_get)
-                for c in combos:
-                    c_names = [p.name for p in c]
-                    uc = [set(x) for x in list(combinations(c_names, ntg))]
-                    if stg in uc:
-                        combos_select.append(c)
-            else:
-                combos_select = combos
 
-            '''
             if len(to_get) != 0:
                 player_count = len(to_get)
                 player_set = set(to_get)
