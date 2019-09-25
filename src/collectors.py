@@ -3,12 +3,13 @@ import numpy as np
 import csv
 from NFL_Player import NFLPlayer
 from Roster import Roster
-from constants import (score_dict, TEAM_NAMES, TEAM_MATCHER, POSITIONS,
-                       LINEUP_SLOTS, MY_TEAM)
+from constants import (score_dict, TEAM_MATCHER, POSITIONS, LINEUP_SLOTS)
 import itertools
-
+from League import LEAGUE as LEAGUE
+TEAM_NAMES = LEAGUE[2]['TEAM_NAMES']
+MY_TEAM = LEAGUE[2]['MY_TEAM']
 TEAM_NUMS = {y:x for x,y in TEAM_NAMES.iteritems()}
-
+score_dict = LEAGUE[2]['SETTINGS']
 
 def get_all_players(file_path):
     file_path = file_path
@@ -70,10 +71,9 @@ def get_yahoo_projections(file_path):
             else:
                 tm = row[1].upper()
             yahoo.append([fi, last, tm, row[2], float(row[-1])])
-            print [fi, last, tm, row[2], float(row[-1])]
     return yahoo
 
-def update_rosters(NF_CSV, YAHOO_CSV, ROSTER_CSV):
+def update_rosters(NF_CSV, YAHOO_CSV, ROSTER_CSV, lid=1):
     score_nf(NF_CSV)
     all_players = get_all_players(NF_CSV)
     yahoo = get_yahoo_projections(YAHOO_CSV)
