@@ -21,10 +21,8 @@ class NFLPlayer():
         if len(yp) == 1:
             self.yh_projection = yp[0][-1]
         else:
-            print fi
-            print last
             self.yh_projection = 0
-            print 'yahoo player not found'
+            print '%s %s %s yahoo not found' % (fi, last, self.team)
 
     def update_nf_yh(self):
         try:
