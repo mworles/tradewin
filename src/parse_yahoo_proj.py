@@ -17,43 +17,49 @@ def parse_row(row):
     tm_pos = tm_pos.split('-')
     tm = tm_pos[0].replace(' ', '')
     pos = tm_pos[1].replace(' ', '')
-    proj = row.find('span', {'class': "Fw-b"}).get_text()
+    srs = row.find_all('span', {'class': "Fw-b"})
+    if len(srs) > 1:
+        proj = srs[-1].get_text()
+    else:
+        proj = srs[0].get_text()
     return [name, tm, pos, proj]
 
 def parse_file(file):
-    file_name = "".join(["../data/", file])
-    print 'parsing %s' % (file_name)
-    soup = bsoup(urllib.urlopen(file_name).read(), features="lxml")
+    print 'parsing %s' % (file)
+    soup = bsoup(urllib.urlopen(file).read(), features="lxml")
     divp = soup.find('div', {'class': 'players'})
     rows = divp.find('table').tbody.find_all('tr')[0:]
     file_data = map(parse_row, rows)
     return file_data
 
-# %%
-files = os.listdir("../data/")
-files = [f for f in files if 'yahoo_proj_' in f]
+def parse_yahoo_proj(lid=1):
+    file_loc = "".join(["../data/", "league_", str(lid), "/"])
+    files = os.listdir(file_loc)
+    files = [f for f in files if 'yahoo_proj_' in f]
+    files = [file_loc + f for f in files]
 
-data = map(parse_file, files)
-data = [item for sublist in data for item in sublist]
+    data = map(parse_file, files)
+    data = [item for sublist in data for item in sublist]
 
-now = datetime.datetime.now()
-date = str(now.year) + '_' + str(now.month) + '_' + str(now.day) + '_'
-time = str(now.hour) + '_' + str(now.minute)
-date_time = date + time
+    now = datetime.datetime.now()
+    date = str(now.year) + '_' + str(now.month) + '_' + str(now.day) + '_'
+    time = str(now.hour) + '_' + str(now.minute)
+    date_time = date + time
 
-f = '../data/yahoo_projections_' + date_time + '.csv'
-f_current = '../data/yahoo_projections.csv'
+    outfile = file_loc + 'yahoo_projections_' + date_time + '.csv'
+    f_current = file_loc + 'yahoo_projections.csv'
 
-with open(f, 'wb') as file:
-    writer = csv.writer(file, delimiter=',')
-    print 'writing %s' % (f)
-    for r in data:
-        try:
-            float(r[-1])
-        except:
-            print r[0]
-            print 'invalid projection'
+    with open(outfile, 'wb') as file:
+        writer = csv.writer(file, delimiter=',')
+        print 'writing %s' % (outfile)
+        for r in data:
+            try:
+                float(r[-1])
+            except:
+                print r[0]
+                print 'invalid projection'
+                print r
 
-        writer.writerow(r)
+            writer.writerow(r)
 
-shutil.copy(f, f_current)
+    shutil.copy(outfile, f_current)
