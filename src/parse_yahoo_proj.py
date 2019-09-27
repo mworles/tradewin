@@ -1,4 +1,4 @@
-#cd "c:/users/mworley/tradewin/src"
+import pandas as pd
 import urllib
 import csv
 from bs4 import BeautifulSoup as bsoup
@@ -63,3 +63,7 @@ def parse_yahoo_proj(lid=1):
             writer.writerow(r)
 
     shutil.copy(outfile, f_current)
+
+    df = pd.read_csv(f_current)
+    df = df.drop_duplicates()
+    df.to_csv(f_current)
