@@ -1,9 +1,10 @@
 from collectors import update_rosters, update_free_agents
-from constants import POSITIONS, LINEUP_SLOTS, MY_TEAM
+from constants import POSITIONS, LINEUP_SLOTS
 from Trade_Generator import TradeGenerator
 import pickle
 import datetime
 import shutil
+from League import LEAGUE as LEAGUE
 
 def get_dt():
     now = datetime.datetime.now()
@@ -13,31 +14,34 @@ def get_dt():
     return dt
 
 lid=2
+TEAM_NAMES = LEAGUE[lid]['TEAM_NAMES']
+MY_TEAM = LEAGUE[lid]['MY_TEAM']
+
 lgdir = 'league_' + str(lid)
 NF_CSV = '../data/nf_projections.csv'
 ROSTER_CSV = "".join(['../data/', lgdir, '/rosters.csv'])
 YAHOO_CSV = "".join(['../data/', lgdir, '/yahoo_projections.csv'])
 
-rosters = update_rosters(NF_CSV, YAHOO_CSV, ROSTER_CSV, lid=lid)
+rosters = update_rosters(NF_CSV, YAHOO_CSV, ROSTER_CSV, lid)
 
-free_agents = update_free_agents(NF_CSV, YAHOO_CSV, ROSTER_CSV)
-tg = TradeGenerator(rosters, free_agents)
-tgt_teams = [5, 6, 8] #[t.team_number for t in rosters if t.team_number != MY_TEAM]
+
+free_agents = update_free_agents(NF_CSV, YAHOO_CSV, ROSTER_CSV, lid)
+tg = TradeGenerator(rosters, free_agents, lid)
+tgt_teams = [t.team_number for t in rosters if t.team_number != MY_TEAM]
 my_max = 3
 other_max = 2
-to_get = [] #['Dalvin Cook']
-to_give = [] #['Travis Kelce'] #, 'Leonard Fournette'] 
-my_bl = [] #['Curtis Samuel', 'Kyler Murray']
-other_bl = ['Damien Williams']
+to_get = ['Melvin Gordon']
+to_give = [] 
+my_bl = [] 
+other_bl = []
 
 trades = tg.get_trades(teams = tgt_teams,
                        my_max = my_max,
-                       other_max = other_max) #,
+                       other_max = other_max,
                        to_get = to_get,
                        to_give = to_give,
                        my_bl = my_bl, 
-                       other_bl = other_bl,
-                       fa = False)
+                       other_bl = other_bl)
 
 pik = "../trades/trade_run_" + get_dt() +  ".dat"
 pik_now = "../trades/trade_run.dat"
@@ -46,15 +50,8 @@ with open(pik, "wb") as f:
     pickle.dump(trades, f)
 
 shutil.copy(pik, pik_now)
-"""
-all_players = []
 
-for r in rosters:
-    all_players.extend(r.team_players)
-    
-sortfunc = lambda x: x.nf_yh
-all_players.sort(key=sortfunc)
-
-for p in all_players[-50:]:
-    print "  ".join([p.name, str(p.nf_projection), str(p.yh_projection)])
-"""
+mt = [t for t in rosters if t.team_number == MY_TEAM][0]
+for p in mt.team_players:
+    print p.name
+    print p.nf_projection
