@@ -1,6 +1,6 @@
 import random
 from copy import copy
-from constants import MY_TEAM, POSITIONS, LINEUP_SLOTS
+from constants import POSITIONS, LINEUP_SLOTS
 
 class Trade:
 
