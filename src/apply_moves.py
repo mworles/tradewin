@@ -29,11 +29,7 @@ def apply_moves(lid=1):
                 if name in p:
                     from_team = t
             team_dict[from_team] = [x for x in team_dict[from_team] if x != name]
-            print 'from team'
-            print team_dict[from_team]
             team_dict[team].append(name)
-            print 'to team'
-            print team_dict[team]
 
         else:
             sys.exit('not add or drop, exiting script')

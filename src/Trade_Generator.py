@@ -5,11 +5,10 @@ from constants import POSITIONS, POSITIONS_NOFLEX, LINEUP_SLOTS
 from Trade import Trade
 from itertools import combinations, product
 from League import LEAGUE as LEAGUE
-TEAM_NAMES = LEAGUE[2]['TEAM_NAMES']
-MY_TEAM = LEAGUE[2]['MY_TEAM']
+#TEAM_NAMES = LEAGUE[1]['TEAM_NAMES']
 
 
-teams = TEAM_NAMES.keys()
+#teams = TEAM_NAMES.keys()
 
 def run_trade(x, my_team, other_team, trades, free_agents):
 
@@ -60,10 +59,11 @@ def run_trade(x, my_team, other_team, trades, free_agents):
 
 class TradeGenerator:
 
-    def __init__(self, rosters, free_agents):
+    def __init__(self, rosters, free_agents, lid):
         self.rosters = rosters
         self.free_agents = free_agents
-        self.my_team = next((r for r in self.rosters if r.team_number == MY_TEAM), None)
+        self.mynum = LEAGUE[lid]['MY_TEAM']
+        self.my_team = next((r for r in self.rosters if r.team_number == self.mynum), None)
         self.roster_numbers = [r.team_number for r in self.rosters]
         self.other_rosters = [r for r in self.rosters if r != self.my_team]
         self.other_team = None
@@ -94,7 +94,7 @@ class TradeGenerator:
                 return x
 
         if teams is None:
-            teams = [t.team_number for t in self.rosters if t.team_number !=4]
+            teams = [t.team_number for t in self.rosters if t.team_number != self.mynum]
 
         trades = []
 

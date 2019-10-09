@@ -6,10 +6,6 @@ from Roster import Roster
 from constants import (score_dict, TEAM_MATCHER, POSITIONS, LINEUP_SLOTS)
 import itertools
 from League import LEAGUE as LEAGUE
-TEAM_NAMES = LEAGUE[2]['TEAM_NAMES']
-MY_TEAM = LEAGUE[2]['MY_TEAM']
-TEAM_NUMS = {y:x for x,y in TEAM_NAMES.iteritems()}
-score_dict = LEAGUE[2]['SETTINGS']
 
 def get_all_players(file_path):
     file_path = file_path
@@ -29,7 +25,8 @@ def get_all_players(file_path):
                 pass
     return players
 
-def get_rosters(file_path):
+def get_rosters(file_path, lid):
+    TEAM_NUMS = {y:x for x,y in LEAGUE[lid]['TEAM_NAMES'].iteritems()}
     file_path = file_path
     rosters = []
     with open(file_path, 'r') as f:
@@ -48,7 +45,8 @@ def get_rosters(file_path):
             rosters.append(Roster(tnum, tname, names))
     return rosters
 
-def score_nf(file_path):
+def score_nf(file_path, lid):
+    score_dict = LEAGUE[lid]['SETTINGS']
     file_path = file_path
     data = pd.read_csv(file_path)
     cmpatt = data['cmp/att'].apply(lambda x: x.split('/'))
@@ -73,14 +71,15 @@ def get_yahoo_projections(file_path):
             yahoo.append([fi, last, tm, row[2], float(row[-1])])
     return yahoo
 
-def update_rosters(NF_CSV, YAHOO_CSV, ROSTER_CSV, lid=1):
-    score_nf(NF_CSV)
+def update_rosters(NF_CSV, YAHOO_CSV, ROSTER_CSV, lid):
+    MY_TEAM = MY_TEAM = LEAGUE[lid]['MY_TEAM']
+    score_nf(NF_CSV, lid)
     all_players = get_all_players(NF_CSV)
     yahoo = get_yahoo_projections(YAHOO_CSV)
     [x.update_yh_projection(yahoo) for x in all_players]
     [x.update_nf_yh() for x in all_players]
 
-    rosters = get_rosters(ROSTER_CSV)
+    rosters = get_rosters(ROSTER_CSV, lid)
 
     for r in rosters:
         r.update_team_players(all_players)
@@ -91,14 +90,14 @@ def update_rosters(NF_CSV, YAHOO_CSV, ROSTER_CSV, lid=1):
         r.compute_starter_total()
     return rosters
 
-def update_free_agents(NF_CSV, YAHOO_CSV, ROSTER_CSV):
-    score_nf(NF_CSV)
+def update_free_agents(NF_CSV, YAHOO_CSV, ROSTER_CSV, lid):
+    score_nf(NF_CSV, lid)
     all_players = get_all_players(NF_CSV)
     yahoo = get_yahoo_projections(YAHOO_CSV)
     [x.update_yh_projection(yahoo) for x in all_players]
     [x.update_nf_yh() for x in all_players]
 
-    rosters = get_rosters(ROSTER_CSV)
+    rosters = get_rosters(ROSTER_CSV, lid)
     taken = []
 
     for r in rosters:

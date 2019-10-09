@@ -46,7 +46,7 @@ def scrape(url):
     time = str(now.hour) + '_' + str(now.minute)
     date_time = date + time
 
-    f = '../data/nf_projections_' + date_time + '.csv'
+    f = '../data/nf/nf_projections_' + date_time + '.csv'
     f_current = '../data/nf_projections.csv'
 
     with open(f, 'wb') as file:
