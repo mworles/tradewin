@@ -20,6 +20,13 @@ class NFLPlayer():
         yp = [p for p in yahoo if p[0] == fi and p[1] == last and p[2] == self.team]
         if len(yp) == 1:
             self.yh_projection = yp[0][-1]
+        elif len(yp) == 2:
+            if self.name.split(' ')[0] == 'Damien':
+                self.yh_projection = yp[0][-1]
+            elif self.name_split(' ')[0] == 'Darrel':
+                self.yh_projection = yp[1][-1]
+            else:
+                pass
         else:
             self.yh_projection = 0
             print '%s %s %s yahoo not found' % (fi, last, self.team)

@@ -66,4 +66,4 @@ def parse_yahoo_proj(lid=1):
 
     df = pd.read_csv(f_current)
     df = df.drop_duplicates()
-    df.to_csv(f_current)
+    df.to_csv(f_current, index=False)

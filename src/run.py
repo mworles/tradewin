@@ -13,7 +13,7 @@ def get_dt():
     dt = date + time
     return dt
 
-lid=2
+lid=1
 TEAM_NAMES = LEAGUE[lid]['TEAM_NAMES']
 MY_TEAM = LEAGUE[lid]['MY_TEAM']
 
@@ -30,8 +30,8 @@ tg = TradeGenerator(rosters, free_agents, lid)
 tgt_teams = [t.team_number for t in rosters if t.team_number != MY_TEAM]
 my_max = 3
 other_max = 2
-to_get = ['Melvin Gordon']
-to_give = [] 
+to_get = ['Kenny Golladay', '']
+to_give = ['Todd Gurley',] 
 my_bl = [] 
 other_bl = []
 

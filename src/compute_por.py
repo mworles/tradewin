@@ -3,7 +3,7 @@ import numpy as np
 import sys
 sys.path.append("..")
 from constants import N_TEAMS, ROSTER, rep_start, rep_bench
-print rep_start
+
 def rep_level(data, rank_column, rep_dict):
     '''Function to obtain the replacement-level point projection for each position.
     Requires three inputs:
@@ -37,7 +37,7 @@ def get_porp(row, rep_dict):
 data_in = "../data/"
 
 # import projections data
-df = pd.read_csv(data_in + 'projections_scored.csv')
+df = pd.read_csv(data_in + '/league_1/projections_scored.csv')
 
 # create position rank
 df = df.sort_values(['pos', 'fpts'], ascending=False)
@@ -75,6 +75,6 @@ df['owned'] = df.apply(is_owned, axis=1)
 df = df.sort_values(['por_start', 'por_bench'], ascending=False)
 
 # save file
-file_name = data_in + 'por.csv'
+file_name = data_in + '/league_1/por.csv'
 print "writing %s" % (file_name)
 df.to_csv(file_name, index=False)

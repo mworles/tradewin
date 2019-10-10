@@ -8,7 +8,7 @@ from constants import rep_start, rep_bench, PCT_START
 
 # import por file
 data_in = "../data/"
-df = pd.read_csv(data_in + 'por.csv')
+df = pd.read_csv(data_in + 'league_1/por.csv')
 
 # budget per team for skill positions
 budget_skill = BUDGET - 2
@@ -136,6 +136,6 @@ df['vor'] = df['vor'].astype(int)
 df = df.sort_values(['vor', 'por_bench', 'fpts'], ascending=False)
 
 # save file
-file_name = data_in + 'vor.csv'
+file_name = data_in + 'league_1/vor.csv'
 print "writing %s" % (file_name)
 df.to_csv(file_name, index=False)

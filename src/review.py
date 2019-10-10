@@ -1,4 +1,5 @@
 import pickle
+import os
 
 def get_names(trade, how):
     if how=='give':
@@ -80,7 +81,9 @@ def filter_trades(trades, my_min=0, other_min=0, ex_teams=None, ex_give=None,
                                             get=get)]
     return ft
 
-
+at = os.listdir("../trades/")
+#at.sort(reverse=True)
+#print at
 
 pik_now = "../trades/trade_run.dat"
 infile = open(pik_now,'rb')
@@ -97,13 +100,13 @@ for n in range(1, 3):
     trades.extend(tr)
 """
 
-my_min = None
-other_min = None
-ex_teams = [10]
-ex_get = [ 'Hunter Henry', 'Damien Williams', 'Jimmy Garoppolo', 'Deshaun Watson']
-ex_give = ['Austin Ekeler', 'T.J. Hockenson', 'Davante Adams', 'Jimmy Garoppolo', 'Hunter Henry'] #, 'Davante Adams', 'Dalvin Cook', 'Austin Ekeler']
-get = ['Melvin Gordon', 'Will Fuller'] 
-give = ['Leonard Fournette', 'Alshon Jeffery', 'Curtis Samuel'] 
+my_min = 0
+other_min = 0
+ex_teams = None
+ex_get = None
+ex_give = None
+get =  None
+give =  None
 
 trades = filter_trades(trades, my_min=my_min, other_min=other_min,
                        ex_teams=ex_teams, get=get, give=give,

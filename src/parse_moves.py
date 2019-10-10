@@ -53,6 +53,8 @@ def parse_file(file):
                 moves = [team, names[n], action]
                 moves = map(lambda x: x.encode('ascii', 'ignore'), moves)
                 row_moves.append(moves)
+        elif 'Vetoed Trade to' in tds_text:
+            pass
         else:
             actions = tds[0].find_all('span')
             names = tds[1].find_all('a', {'target': 'sports'})
