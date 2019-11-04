@@ -41,8 +41,6 @@ def score_projections(lid=1):
     keep = ['name', 'team', 'pos', 'fpts']
     df = df[keep]
 
-    df['pos'] = df['pos'].str.lower()
-
     df = df.sort_values('fpts', ascending=False)
 
     lg_sub = 'league_' + str(lid) + '/'
