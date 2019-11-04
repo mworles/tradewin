@@ -20,7 +20,8 @@ def get_all_players(file_path):
                     nm = ' '.join(name_split[0:2])
                 else:
                     nm = row[0]
-                players.append(NFLPlayer(nm, row[1], row[2], float(row[-1])))
+                #players.append(NFLPlayer(nm, row[1], row[2], float(row[-1])))
+                players.append(NFLPlayer(nm, row[2], row[1], float(row[-1])))
             except:
                 pass
     return players
@@ -73,7 +74,7 @@ def get_yahoo_projections(file_path):
 
 def update_rosters(NF_CSV, YAHOO_CSV, ROSTER_CSV, lid):
     MY_TEAM = MY_TEAM = LEAGUE[lid]['MY_TEAM']
-    score_nf(NF_CSV, lid)
+    #score_nf(NF_CSV, lid)
     all_players = get_all_players(NF_CSV)
     yahoo = get_yahoo_projections(YAHOO_CSV)
     [x.update_yh_projection(yahoo) for x in all_players]
@@ -91,7 +92,7 @@ def update_rosters(NF_CSV, YAHOO_CSV, ROSTER_CSV, lid):
     return rosters
 
 def update_free_agents(NF_CSV, YAHOO_CSV, ROSTER_CSV, lid):
-    score_nf(NF_CSV, lid)
+    #score_nf(NF_CSV, lid)
     all_players = get_all_players(NF_CSV)
     yahoo = get_yahoo_projections(YAHOO_CSV)
     [x.update_yh_projection(yahoo) for x in all_players]
