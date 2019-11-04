@@ -55,23 +55,6 @@ def filter_trade(trade, my_min=0, other_min=0, ex_teams=None,
                     
 def filter_trades(trades, my_min=0, other_min=0, ex_teams=None, ex_give=None,
                   ex_get=None, give=None, get=None):
-    #ft = trades
-    """
-    if my_min is not None:
-        ft = [t for t in ft if t.my_nf_gain > my_min]
-    if other_min is not None:
-        ft = [t for t in ft if t.other_yh_gain > other_min]
-    if ex_teams is not None:
-        ft = [t for t in ft if t.other_team.team_number not in ex_teams]
-    if give is not None:
-        ft = [t for t in ft if has_players(get_names(t, 'give'), give)]
-    if get is not None:
-        ft = [t for t in ft if has_players(get_names(t, 'get'), get)]
-    if ex_give is not None:
-        ft = [t for t in ft if no_exclusions(get_names(t, 'give'), ex_give)]
-    if ex_get is not None:
-        ft = [t for t in ft if no_exclusions(get_names(t, 'get'), ex_get)]
-    """
     ft = [t for t in trades if filter_trade(t, my_min=my_min,
                                             other_min=other_min,
                                             ex_teams=ex_teams,
@@ -82,31 +65,21 @@ def filter_trades(trades, my_min=0, other_min=0, ex_teams=None, ex_give=None,
     return ft
 
 at = os.listdir("../trades/")
-#at.sort(reverse=True)
-#print at
 
 pik_now = "../trades/trade_run.dat"
 infile = open(pik_now,'rb')
 trades = pickle.load(infile)
 infile.close()
 
-"""
-trades = []
-for n in range(1, 3):
-    pik_now = "../trades/trade_run_" + str(n) + ".dat"
-    infile = open(pik_now,'rb')
-    tr = pickle.load(infile)
-    infile.close()
-    trades.extend(tr)
-"""
+my_min = 15
+other_min = 10
+rt = [t.other_team.team_number for t in trades]
 
-my_min = 0
-other_min = 0
-ex_teams = None
-ex_get = None
-ex_give = None
-get =  None
-give =  None
+ex_teams = None #[6] # rt
+ex_get = ['A.J. Green', 'Aaron Jones', 'Jameis Winston']
+ex_give = []
+get =  []
+give =  []
 
 trades = filter_trades(trades, my_min=my_min, other_min=other_min,
                        ex_teams=ex_teams, get=get, give=give,
